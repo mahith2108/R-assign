@@ -13,11 +13,14 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 cacheSolve <- function(x,...) {
+  
   inv = x$getmean()
+  
   if(!is.null(inv)) {
     message("getting cached data")
     return(inv)
   }
+  
   mat.data = x$get()
   inv <- solve(mat.data,...)
   x$setmean(inv)
@@ -25,15 +28,19 @@ cacheSolve <- function(x,...) {
 }
 
 Cachetest<-function(mat){
+  
   #mat assumed to be invertible square matrix 
   # the function is used to measure the time saved when retrieved directly from cache
-  #creating and object in environment and finding the inverse
+  #creating an object in environment and finding the inverse of it
+  
   temp<-makeCacheMatrix(mat)
   ptm <- proc.time()
   cacheSolve(temp)
   time<-proc.time() - ptm
   print(time)
-  #retrieving directly from the cache
+  
+  #retrieving directly from the cache without finding inverse again
+  
   ptm1 <- proc.time()
   print("Retrieving directly from cache")
   cacheSolve(temp)
@@ -45,5 +52,9 @@ Cachetest<-function(mat){
 set.seed(1)
 mat<-matrix(rnorm(1000000),1000,1000)
 Cachetest(mat)
+
+set.seed(1)
+mat1<-matrix(rnorm(10000),100,100)
+Cachetest(mat1)
 
 
